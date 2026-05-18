@@ -1,5 +1,4 @@
 from typing import cast
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth import login, logout
@@ -14,12 +13,9 @@ from .models import Product, Category, Order, OrderItem, Wishlist
 from .forms import UserRegistrationForm, CheckoutForm, LoginForm
 # At the top of views.py, add require_POST to your existing imports
 from django.views.decorators.http import require_POST
-
-
 # ====================== Public Pages ======================
 class HomeView(TemplateView):
     template_name = 'home.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['featured_products'] = Product.objects.filter(
@@ -27,7 +23,6 @@ class HomeView(TemplateView):
         )[:8]
         context['categories'] = Category.objects.all()
         return context
-
 
 class ProductListView(ListView):
     model = Product
@@ -37,19 +32,16 @@ class ProductListView(ListView):
 
     def get_queryset(self):
         queryset = Product.objects.select_related('category').filter(is_active=True)
-        
         search_query = self.request.GET.get('search', '')
         category_id = self.request.GET.get('category')
         min_price = self.request.GET.get('min_price')
         max_price = self.request.GET.get('max_price')
         sort = self.request.GET.get('sort')
-
         # ✅ AFTER — line break BEFORE the binary operator (PEP 8 preferred style)
         queryset = queryset.filter(
             Q(name__icontains=search_query)
             | Q(description__icontains=search_query)
         )
-        
         if category_id:
             try:
                 queryset = queryset.filter(category__id=int(category_id))
@@ -68,7 +60,6 @@ class ProductListView(ListView):
                 queryset = queryset.filter(price__lte=Decimal(max_price))
             except (ValueError, ArithmeticError):
                 pass
-
         # Sorting
         if sort == 'price_asc':
             queryset = queryset.order_by('price')
@@ -78,7 +69,6 @@ class ProductListView(ListView):
             queryset = queryset.order_by('-created_at')
         else:
             queryset = queryset.order_by('-featured', 'name')
-            
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -92,7 +82,6 @@ class ProductListView(ListView):
             'sort': self.request.GET.get('sort', ''),
         }
         return context
-
 
 class ProductDetailView(DetailView):
     model = Product
@@ -115,19 +104,16 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = cast(Product, self.object)
-        
         context['related_products'] = Product.objects.filter(
             category=product.category,
             is_active=True
         ).exclude(pk=product.pk)[:4]
         return context
 
-
 class CategoryListView(ListView):
     model = Category
     template_name = 'categories.html'
     context_object_name = 'categories'
-
 
 class CategoryDetailView(DetailView):
     model = Category
@@ -146,41 +132,31 @@ class CategoryDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = cast(Category, self.object)
-        
         products = Product.objects.filter(
             category=category,
             is_active=True
         )
-        
         # Add pagination to products
         page = self.request.GET.get('page')
         paginator = Paginator(products, self.paginate_by)
         products_page = paginator.get_page(page)
-        
         context['products'] = products_page
         context['paginator'] = paginator
         context['page_obj'] = products_page
         return context
-
-
 # ====================== Cart, Wishlist, Orders, etc. ======================
-
-
 def _build_cart_items(session):
     cart = session.get('cart', {}) or {}
     items = []
     total = Decimal('0.00')
     cleaned_cart = {}
-
     for product_id, quantity in cart.items():
         try:
             product = Product.objects.get(pk=int(product_id), is_active=True)
         except (Product.DoesNotExist, ValueError):
             continue
-
         if quantity <= 0:
             continue
-
         subtotal = product.price * quantity
         items.append({
             'product': product,
@@ -189,12 +165,9 @@ def _build_cart_items(session):
         })
         total += subtotal
         cleaned_cart[str(product.pk)] = quantity
-
     if cleaned_cart != cart:
         session['cart'] = cleaned_cart
-
     return items, total
-
 
 @login_required
 def cart_view(request):
@@ -204,7 +177,6 @@ def cart_view(request):
         'total': total,
     })
 
-
 # ✅ AFTER
 @login_required
 @require_POST
@@ -213,13 +185,11 @@ def clear_cart(request):
     messages.info(request, 'Your cart has been cleared.')
     return redirect('cart')
 
-
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
     cart = request.session.get('cart', {})
     product_key = str(product_id)
-
     if request.method == 'POST':
         try:
             qty = int(request.POST.get('quantity', 1))
@@ -246,7 +216,6 @@ def add_to_cart(request, product_id):
         messages.info(request, 'Cart updated.')
     return redirect('cart')
 
-
 @login_required
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})
@@ -255,25 +224,21 @@ def remove_from_cart(request, product_id):
     messages.info(request, 'Product removed from cart.')
     return redirect('cart')
 
-
 @login_required
 def wishlist_view(request):
     products = Product.objects.filter(wishlist__user=request.user, is_active=True).distinct()
     return render(request, 'wishlist.html', {'products': products})
 
-
 @login_required
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
     wishlist, created = Wishlist.objects.get_or_create(user=request.user, product=product)
-
     if created:
         messages.success(request, '❤️ Added to wishlist!')
     else:
         messages.info(request, 'Already in wishlist')
 
     return redirect('wishlist')
-
 
 # ✅ AFTER — call get_object_or_404 without assigning the result.
 # We only call it to verify the product exists (raises 404 if not).
@@ -285,11 +250,9 @@ def remove_from_wishlist(request, product_id):
     messages.info(request, 'Product removed from wishlist.')
     return redirect('wishlist')
 
-
 def register(request):
     if request.user.is_authenticated:
         return redirect('home')
-
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -299,16 +262,12 @@ def register(request):
             return redirect('home')
     else:
         form = UserRegistrationForm()
-
     return render(request, 'register.html', {'form': form})
-
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     authentication_form = LoginForm
     redirect_authenticated_user = True
-
-
 # ✅ AFTER — only responds to POST requests
 @require_POST
 def logout_view(request):
@@ -316,15 +275,12 @@ def logout_view(request):
     messages.info(request, 'You have been logged out.')
     return redirect('home')
 
-
 @login_required
 def checkout(request):
     cart_items, total = _build_cart_items(request.session)
-
     if not cart_items:
         messages.error(request, 'Your cart is empty!')
         return redirect('cart')
-
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
@@ -332,7 +288,6 @@ def checkout(request):
             order.user = request.user
             order.total = total
             order.save()
-
             for item in cart_items:
                 OrderItem.objects.create(
                     order=order,
@@ -340,7 +295,6 @@ def checkout(request):
                     quantity=item['quantity'],
                     price=item['product'].price,
                 )
-
             request.session['cart'] = {}
             messages.success(request, 'Order placed successfully!')
             return redirect('order_success', pk=order.id)
@@ -350,28 +304,22 @@ def checkout(request):
             'email': request.user.email,
         }
         form = CheckoutForm(initial=initial)
-
     return render(request, 'checkout.html', {
         'form': form,
         'cart_items': cart_items,
         'total': total,
     })
 
-
 class OrderSuccessView(LoginRequiredMixin, DetailView):
     model = Order
     template_name = 'order_confirmation.html'
     context_object_name = 'order'
-
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
-
-
 @login_required
 def my_account(request):
     orders_count = request.user.orders.count()
     return render(request, 'my_account.html', {'orders_count': orders_count})
-
 
 @login_required
 def my_orders(request):
