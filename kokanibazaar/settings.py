@@ -1,5 +1,6 @@
 import environ
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -87,14 +88,19 @@ DATABASES = {
 
 # --- Static & Media Files ---
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 MEDIA_URL = "/media/"
 # ✅ CORRECT — puts media/ at the project root alongside manage.py
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Security (Recommended)
+SECURE_SSL_REDIRECT = False   # Keep False on free plan
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # --- Auth Redirects ---
 LOGIN_URL = "login"
