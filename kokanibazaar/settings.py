@@ -93,11 +93,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-    BASE_DIR.parent / 'static',
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = Path(__file__).resolve().parent / 'media'
+# ✅ CORRECT — puts media/ at the project root alongside manage.py
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # --- Auth Redirects ---
 LOGIN_URL = 'login'
@@ -113,6 +113,10 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- Logging ---
+# ✅ Add this line just ABOVE your LOGGING = { ... } block
+# This ensures the logs/ directory exists before the logging system tries to write to it
+(BASE_DIR / 'logs').mkdir(exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

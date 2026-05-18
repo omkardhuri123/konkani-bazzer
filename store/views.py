@@ -9,9 +9,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.db.models import Q
 from decimal import Decimal
-
+from django.core.paginator import Paginator
 from .models import Product, Category, Order, OrderItem, Wishlist
 from .forms import UserRegistrationForm, CheckoutForm, LoginForm
+# At the top of views.py, add require_POST to your existing imports
+from django.views.decorators.http import require_POST
 
 
 # ====================== Public Pages ======================
@@ -148,7 +150,6 @@ class CategoryDetailView(DetailView):
         
         # Add pagination to products
         page = self.request.GET.get('page')
-        from django.core.paginator import Paginator
         paginator = Paginator(products, self.paginate_by)
         products_page = paginator.get_page(page)
         
@@ -200,7 +201,9 @@ def cart_view(request):
     })
 
 
+# ✅ AFTER
 @login_required
+@require_POST
 def clear_cart(request):
     request.session['cart'] = {}
     messages.info(request, 'Your cart has been cleared.')
@@ -299,6 +302,8 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
 
+# ✅ AFTER — only responds to POST requests
+@require_POST
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')

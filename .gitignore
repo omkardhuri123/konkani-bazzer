@@ -26,3 +26,6 @@ datadump.json
 
 # VS Code settings
 .vscode/
+
+# Ignore log files but keep the logs folder
+logs/*.log
