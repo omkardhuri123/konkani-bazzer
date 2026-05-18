@@ -1,3 +1,6 @@
+# File location: .github/workflows/quality.yml
+# This workflow runs flake8 to check code style on every push.
+
 name: Code Quality
 
 on:
@@ -11,23 +14,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Download the repository code onto GitHub's machine
       - uses: actions/checkout@v4
 
+      # Step 2: Install the Python version we want for linting
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # Install only flake8 — no need for all dependencies just to lint
+      # Step 3: Install only flake8 — we don't need the full project
+      # dependencies just to check code style, so this stays fast
       - name: Install flake8
         run: pip install flake8
 
-      # Run flake8 on your store app and project config
-      # --max-line-length=120 means lines up to 120 chars are OK
-      # --exclude tells it to ignore migrations (auto-generated code)
+      # Step 4: Run flake8 on your app code
+      # Notice this step starts with exactly 6 spaces before the dash,
+      # the same as every other step above — that is the fix
       - name: Run flake8
         run: |
           flake8 store/ kokanibazaar/ \
             --max-line-length=120 \
             --exclude=store/migrations/,kokanibazaar/__pycache__/ \
-            --ignore=E501,W503
+            --ignore=W503,W504
