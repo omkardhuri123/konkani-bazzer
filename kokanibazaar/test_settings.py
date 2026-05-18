@@ -1,16 +1,18 @@
-# This file is ONLY used during CI testing on GitHub Actions.
-# It overrides the database setting to use SQLite so we don't
-# need a real MySQL server running during tests.
+# ✅ FIXED test_settings.py
+# noqa comments tell flake8 to ignore specific rules on specific lines.
+# F403 = star import warning, F405 = undefined from star import warning.
+# These are acceptable in a test settings file where we intentionally
+# inherit all production settings and only override what needs to change.
 
-from .settings import *   # Import everything from real settings
+from .settings import *  # noqa: F403, F405
 
-# Override the database — use SQLite for speed in testing
+# Override the database — use SQLite for speed in CI testing.
+# No MySQL server needed in GitHub Actions environment.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'test_db.sqlite3',
+        'NAME': BASE_DIR / 'test_db.sqlite3',  # noqa: F405
     }
 }
 
-# Disable debug for realistic test conditions
 DEBUG = False

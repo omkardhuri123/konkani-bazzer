@@ -88,3 +88,4 @@ class AddToCartForm(forms.Form):
             'class': 'w-16 text-center border border-gray-300 rounded-xl'
         })
     )
+    

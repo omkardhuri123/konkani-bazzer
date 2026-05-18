@@ -44,25 +44,29 @@ class ProductListView(ListView):
         max_price = self.request.GET.get('max_price')
         sort = self.request.GET.get('sort')
 
-        if search_query:
-            queryset = queryset.filter(
-                Q(name__icontains=search_query) | 
-                Q(description__icontains=search_query)
-            )
+        # ✅ AFTER — line break BEFORE the binary operator (PEP 8 preferred style)
+        queryset = queryset.filter(
+            Q(name__icontains=search_query)
+            | Q(description__icontains=search_query)
+        )
+        
         if category_id:
             try:
                 queryset = queryset.filter(category__id=int(category_id))
             except ValueError:
                 pass
+            # ✅ AFTER — only catch the specific errors we expect from bad user input.
+        # ValueError: raised when Decimal() receives a non-numeric string like "abc"
+        # ArithmeticError: parent class covering decimal overflow/invalid operations
         if min_price:
             try:
                 queryset = queryset.filter(price__gte=Decimal(min_price))
-            except:
+            except (ValueError, ArithmeticError):
                 pass
         if max_price:
             try:
                 queryset = queryset.filter(price__lte=Decimal(max_price))
-            except:
+            except (ValueError, ArithmeticError):
                 pass
 
         # Sorting
@@ -271,6 +275,9 @@ def add_to_wishlist(request, product_id):
     return redirect('wishlist')
 
 
+# ✅ AFTER — call get_object_or_404 without assigning the result.
+# We only call it to verify the product exists (raises 404 if not).
+# We don't need the Product object itself for the delete operation.
 @login_required
 def remove_from_wishlist(request, product_id):
     get_object_or_404(Product, id=product_id)

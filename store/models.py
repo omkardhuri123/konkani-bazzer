@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
-from django.utils.timezone import now
-from decimal import Decimal
+
 
 
 def generate_unique_slug(instance, value, slug_field_name='slug'):
@@ -173,3 +172,4 @@ class OrderItem(models.Model):
 
     class Meta:
         ordering = ['id']
+        
