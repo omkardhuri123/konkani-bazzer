@@ -3,13 +3,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-
-handler404 = 'django.views.defaults.page_not_found'
-handler500 = 'django.views.defaults.server_error'
+handler404 = "django.views.defaults.page_not_found"
+handler500 = "django.views.defaults.server_error"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('store.urls')),
+    path("admin/", admin.site.urls),
+    path("", include("store.urls")),
 ]
 
 if settings.DEBUG:

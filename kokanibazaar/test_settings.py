@@ -9,9 +9,9 @@ from .settings import *  # noqa: F403, F405
 # Override the database — use SQLite for speed in CI testing.
 # No MySQL server needed in GitHub Actions environment.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'test_db.sqlite3',  # noqa: F405
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "test_db.sqlite3",  # noqa: F405
     }
 }
 
