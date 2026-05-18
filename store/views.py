@@ -198,7 +198,7 @@ def clear_cart(request):
 
 @login_required
 def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id, is_active=True)
+    _product = get_object_or_404(Product, id=product_id, is_active=True)
     cart = request.session.get("cart", {})
     product_key = str(product_id)
     if request.method == "POST":
