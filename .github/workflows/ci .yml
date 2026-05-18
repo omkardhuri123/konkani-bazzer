@@ -1,0 +1,68 @@
+# ============================================================
+# WORKFLOW NAME — shows up in GitHub's Actions tab
+# ============================================================
+name: Konkani Bazaar CI
+
+# ============================================================
+# TRIGGER — when does this workflow run?
+# 'push' means: every time you do 'git push' to these branches
+# ============================================================
+on:
+  push:
+    branches:
+      - main        # runs when you push to main
+      - develop     # also runs when you push to develop branch
+  pull_request:
+    branches:
+      - main        # runs when someone proposes a merge into main
+
+# ============================================================
+# JOBS — the actual work
+# ============================================================
+jobs:
+
+  # This job is named 'test' — you can name it anything
+  test:
+    # GitHub gives us a fresh Ubuntu machine for this job
+    runs-on: ubuntu-latest
+
+    # ========================================================
+    # STEPS — each step runs after the previous one succeeds
+    # ========================================================
+    steps:
+
+      # Step 1: Download your repository code onto this machine
+      # 'uses:' means "use this pre-built Action from the Marketplace"
+      # actions/checkout is official — it's like doing 'git clone'
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install the Python version we want
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install your project's dependencies
+      # 'run:' means "execute this shell command"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4: Create a minimal .env file for the test environment
+      # We use SQLite for testing (faster, no MySQL setup needed)
+      # We set DEBUG=True and a fake SECRET_KEY
+      - name: Create test .env file
+        run: |
+          echo "SECRET_KEY=test-secret-key-for-ci-only" >> .env
+          echo "DEBUG=True" >> .env
+          echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
+          echo "DB_NAME=test_db" >> .env
+          echo "DB_USER=test_user" >> .env
+          echo "DB_PASSWORD=test_pass" >> .env
+          echo "DB_HOST=localhost" >> .env
+
+      # Step 5: Run Django's test suite
+      # --settings flag tells Django to use a special test settings file
+      # We'll create that file in a moment
+      - name: Run Django tests
+        run: python manage.py test --settings=kokanibazaar.test_settings --verbosity=2
