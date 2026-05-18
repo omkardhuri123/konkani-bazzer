@@ -1139,3 +1139,52 @@ TypeError: unsupported operand type(s) for *: 'NoneType' and 'int'
 [2026-05-18 13:03:26,426] INFO django.utils.autoreload:681 Watching for file changes with StatReloader
 [2026-05-18 14:22:55,795] INFO django.utils.autoreload:667 Watching for file changes with StatReloader
 [2026-05-18 16:22:38,236] INFO django.utils.autoreload:667 Watching for file changes with StatReloader
+[2026-05-18 17:36:05,892] INFO django.utils.autoreload:667 Watching for file changes with StatReloader
+[2026-05-18 17:36:11,334] ERROR django.security.DisallowedHost:253 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\http\request.py", line 203, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+[2026-05-18 17:36:57,281] ERROR django.security.DisallowedHost:253 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\http\request.py", line 203, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+[2026-05-18 17:37:00,841] ERROR django.security.DisallowedHost:253 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\http\request.py", line 203, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+[2026-05-18 17:37:16,451] INFO django.utils.autoreload:667 Watching for file changes with StatReloader
+[2026-05-18 17:37:21,135] ERROR django.security.DisallowedHost:253 Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\admin\Desktop\New Djanogo Project\myenv\Lib\site-packages\django\http\request.py", line 203, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '127.0.0.1:8000'. You may need to add '127.0.0.1' to ALLOWED_HOSTS.
+[2026-05-18 17:44:15,120] INFO django.utils.autoreload:265 C:\Users\admin\Desktop\New Djanogo Project\kokanibazaar\kokanibazaar\settings.py changed, reloading.
+[2026-05-18 17:44:26,200] INFO django.utils.autoreload:667 Watching for file changes with StatReloader
+[2026-05-18 17:44:32,003] INFO django.utils.autoreload:265 C:\Users\admin\Desktop\New Djanogo Project\kokanibazaar\kokanibazaar\settings.py changed, reloading.

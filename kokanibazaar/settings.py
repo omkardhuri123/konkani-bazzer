@@ -60,29 +60,35 @@ TEMPLATES = [
 ]
 
 # --- Database Configuration ---
-# MySQL is used in all environments. Credentials always come from .env.
+# # MySQL is used in all environments. Credentials always come from .env.
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": env("DB_NAME"),
+#         "USER": env("DB_USER"),
+#         "PASSWORD": env("DB_PASSWORD"),
+#         "HOST": env("DB_HOST", default="localhost"),  # type: ignore[arg-type]
+#         "PORT": env("DB_PORT", default="3306"),  # type: ignore[arg-type]
+#         # KEY FIX: Tell Django the database connection runs in IST using a
+#         # numeric offset (+05:30) instead of the IANA name 'Asia/Kolkata'.
+#         # MySQL can resolve numeric offsets natively without needing its
+#         # timezone lookup tables installed — which are empty on Windows by default.
+#         "TIME_ZONE": "Asia/Kolkata",
+#         "OPTIONS": {
+#             "charset": "utf8mb4",
+#             "auth_plugin_map": "mysql_native_password",
+#             # This sets the MySQL session timezone to +05:30 (IST) using a
+#             # numeric offset. Django's CONVERT_TZ() calls will use this offset
+#             # instead of the string 'Asia/Kolkata', bypassing the need for
+#             # MySQL timezone tables entirely.
+#             "init_command": "SET time_zone = '+05:30'",
+#         },
+#     }
+# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST", default="localhost"),  # type: ignore[arg-type]
-        "PORT": env("DB_PORT", default="3306"),  # type: ignore[arg-type]
-        # KEY FIX: Tell Django the database connection runs in IST using a
-        # numeric offset (+05:30) instead of the IANA name 'Asia/Kolkata'.
-        # MySQL can resolve numeric offsets natively without needing its
-        # timezone lookup tables installed — which are empty on Windows by default.
-        "TIME_ZONE": "Asia/Kolkata",
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "auth_plugin_map": "mysql_native_password",
-            # This sets the MySQL session timezone to +05:30 (IST) using a
-            # numeric offset. Django's CONVERT_TZ() calls will use this offset
-            # instead of the string 'Asia/Kolkata', bypassing the need for
-            # MySQL timezone tables entirely.
-            "init_command": "SET time_zone = '+05:30'",
-        },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
