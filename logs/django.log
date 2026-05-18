@@ -1136,3 +1136,4 @@ Traceback (most recent call last):
 TypeError: unsupported operand type(s) for *: 'NoneType' and 'int'
 [2026-05-17 18:07:09,985] ERROR django.server:249 "GET /admin/store/order/2/change/?_changelist_filters=created_at__month%3D5%26created_at__year%3D2026%26payment_method__exact%3Dcod HTTP/1.1" 500 624616
 [2026-05-18 10:43:28,863] INFO django.utils.autoreload:681 Watching for file changes with StatReloader
+[2026-05-18 13:03:26,426] INFO django.utils.autoreload:681 Watching for file changes with StatReloader
