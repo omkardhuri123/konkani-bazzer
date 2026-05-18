@@ -198,9 +198,12 @@ def clear_cart(request):
 
 @login_required
 def add_to_cart(request, product_id):
-    _product = get_object_or_404(Product, id=product_id, is_active=True)
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+
     cart = request.session.get("cart", {})
     product_key = str(product_id)
+
+    # Determine quantity
     if request.method == "POST":
         try:
             qty = int(request.POST.get("quantity", 1))
@@ -221,10 +224,14 @@ def add_to_cart(request, product_id):
         cart[product_key] = current + qty
 
     request.session["cart"] = cart
+    request.session.modified = True  # Good practice
+
+    # Use the product object (removes F841 warning)
     if qty > 0:
-        messages.success(request, "✅ Product added to cart!")
+        messages.success(request, f"✅ {product.name} added to cart!")
     else:
-        messages.info(request, "Cart updated.")
+        messages.info(request, f"Cart updated: {product.name}")
+
     return redirect("cart")
 
 
