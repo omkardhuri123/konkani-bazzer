@@ -1,0 +1,28 @@
+
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Django secret stuff
+*.sqlite3
+local_settings.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Virtual Environment
+env/
+venv/
+myenv/
+
+
+# Data dump file
+datadump.json
+
+
+# VS Code settings
+.vscode/

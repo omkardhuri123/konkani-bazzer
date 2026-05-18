@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmed - Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8 md:p-12">
+            
+            <!-- Success Icon -->
+            <div class="text-center mb-8">
+                <i data-lucide="check-circle" class="h-20 w-20 text-green-500 mx-auto"></i>
+                <h1 class="text-4xl font-bold mt-6 text-gray-900">Order Confirmed!</h1>
+                <p class="text-gray-600 mt-3 text-lg">
+                    Your order <span class="font-semibold">#{{ order.id }}</span> has been placed successfully.
+                </p>
+            </div>
+
+            <div class="border-t border-b py-8 my-8 space-y-8">
+                
+                <!-- Order Summary -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Order Summary</h3>
+                    <div class="space-y-3">
+                        {% for item in order.items.all %}
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">
+                                {{ item.product.name }} × {{ item.quantity }}
+                            </span>
+                            <span class="font-medium">₹{{ item.get_total|floatformat:2 }}</span>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="border-t pt-4 mt-4">
+                            <div class="flex justify-between font-semibold text-lg">
+                                <span>Total Amount</span>
+                                <span>₹{{ order.total|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Shipping Address</h3>
+                    <div class="bg-gray-50 p-5 rounded-xl">
+                        <p class="font-medium">{{ order.first_name }} {{ order.last_name }}</p>
+                        <p>{{ order.address }}</p>
+                        <p>{{ order.city }}, {{ order.state }} - {{ order.zip_code }}</p>
+                        <p>{{ order.country }}</p>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-600 text-sm">Email</p>
+                            <p class="font-medium">{{ order.email }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 text-sm">Phone</p>
+                            <p class="font-medium">{{ order.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Thank You Message -->
+            <div class="text-center text-gray-600 mb-8">
+                <p>Thank you for shopping with Kokani Bazaar!</p>
+                <p class="text-sm mt-2">You will receive an order confirmation email shortly.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'my_orders' %}" 
+                   class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-medium text-center">
+                    View My Orders
+                </a>
+                <a href="{% url 'home' %}" 
+                   class="border border-gray-300 hover:bg-gray-50 px-8 py-4 rounded-xl font-medium text-center">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

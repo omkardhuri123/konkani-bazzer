@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}My Account - Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-md overflow-hidden">
+            <div class="bg-green-600 text-white p-10">
+                <h1 class="text-3xl font-bold">My Account</h1>
+                <p class="mt-2 text-green-100">Manage your profile and review your order history.</p>
+            </div>
+
+            <div class="p-8 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border rounded-2xl p-6">
+                        <h2 class="text-xl font-semibold mb-4">Profile Information</h2>
+                        <div class="space-y-3 text-gray-700">
+                            <div>
+                                <p class="text-sm text-gray-500">Username</p>
+                                <p class="font-medium">{{ user.username }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Full Name</p>
+                                <p class="font-medium">{{ user.name|default:'Not set' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Email</p>
+                                <p class="font-medium">{{ user.email }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Phone</p>
+                                <p class="font-medium">{{ user.phone|default:'Not set' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Joined</p>
+                                <p class="font-medium">{{ user.date_joined|date:'F d, Y' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border rounded-2xl p-6">
+                        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                        <div class="space-y-3 text-gray-700">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500">Total Orders</span>
+                                <span class="font-semibold">{{ orders_count }}</span>
+                            </div>
+                            <p class="text-sm text-gray-500">
+                                Click below to view full details for each order.
+                            </p>
+                        </div>
+                        <a href="{% url 'my_orders' %}"
+                           class="inline-block mt-8 bg-green-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-green-700 transition">
+                            View My Orders
+                        </a>
+                    </div>
+                </div>
+
+                <div class="border rounded-2xl p-6 bg-gray-50">
+                    <h2 class="text-xl font-semibold mb-4">Account Actions</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="{% url 'logout' %}" class="block bg-white border border-gray-200 rounded-2xl px-6 py-5 hover:shadow transition">
+                            <h3 class="font-semibold mb-2">Logout</h3>
+                            <p class="text-sm text-gray-600">Sign out of your account securely.</p>
+                        </a>
+                        <a href="{% url 'product_list' %}" class="block bg-white border border-gray-200 rounded-2xl px-6 py-5 hover:shadow transition">
+                            <h3 class="font-semibold mb-2">Continue Shopping</h3>
+                            <p class="text-sm text-gray-600">Browse products and discover new flavors.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

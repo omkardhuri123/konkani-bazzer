@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-16">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden md:flex">
+        <div class="hidden md:block md:w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=900&q=80');">
+        </div>
+        <div class="w-full md:w-1/2 p-10">
+            <div class="mb-8">
+                <p class="text-sm uppercase text-green-600 font-semibold">Welcome Back</p>
+                <h1 class="text-3xl font-bold text-gray-900 mt-3">Login to your account</h1>
+                <p class="text-gray-500 mt-2">Access your orders, wishlist, and manage your profile.</p>
+                {% if next %}
+                    <div class="mt-4 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-xl p-4 text-sm">
+                        Please log in to continue to the page you were trying to access.
+                    </div>
+                {% endif %}
+            </div>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700">Email or Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="text-sm text-red-600 mt-2">{{ form.username.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_password" class="block text-sm font-medium text-gray-700">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <p class="text-sm text-red-600 mt-2">{{ form.password.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center justify-between text-sm text-gray-600">
+                    <a href="{% url 'register' %}" class="hover:text-green-600">Create an account</a>
+                    <a href="#" class="hover:text-green-600">Forgot password?</a>
+                </div>
+
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+                <button type="submit" class="w-full py-3 px-4 bg-green-600 text-white rounded-2xl text-lg font-semibold hover:bg-green-700 transition">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

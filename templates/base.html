@@ -1,0 +1,341 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover fresh Konkan products, organic groceries, spices, fruits, nuts and more delivered directly to your home.">
+    <meta name="keywords" content="Konkan, organic, groceries, spices, fruits, nuts, online store, natural products">
+    <meta property="og:title" content="{% block og_title %}Kokani Bazaar{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Discover fresh Konkan products, organic groceries, spices, fruits, nuts and more delivered directly to your home.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'images/main.jpg' %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Kokani Bazaar{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Discover fresh Konkan products, organic groceries, spices, fruits, nuts and more delivered directly to your home.{% endblock %}">
+    <meta name="twitter:image" content="{% static 'images/main.jpg' %}">
+    <title>{% block title %}Kokani Bazaar{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="flex items-center">
+                    <span class="text-2xl font-bold text-green-600">Kokani Bazaar</span>
+                </a>
+
+                <!-- Search Form (Desktop) -->
+                <form action="{% url 'product_list' %}" method="get" class="hidden md:flex flex-grow max-w-md mx-4">
+                    <div class="relative w-full">
+                        <input
+                            type="search"
+                            name="search"
+                            placeholder="Search products..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        >
+                        <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                            <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Navigation -->
+                <nav class="flex items-center space-x-4 md:space-x-6">
+                    <a href="{% url 'product_list' %}" class="hidden md:block text-gray-600 hover:text-green-600">Shop</a>
+                    <a href="{% url 'categories' %}" class="hidden md:block text-gray-600 hover:text-green-600">Categories</a>
+
+                    <!-- Cart -->
+                    <div class="relative">
+                        <button id="mini-cart-button" type="button" class="relative text-gray-600 hover:text-green-600">
+                            <i data-lucide="shopping-cart" class="h-6 w-6"></i>
+                            {% if cart_total_items and cart_total_items > 0 %}
+                                <span class="absolute -top-1 -right-1 bg-green-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                                    {{ cart_total_items }}
+                                </span>
+                            {% endif %}
+                        </button>
+                        <a href="{% url 'cart' %}" class="ml-2 hidden md:inline text-gray-600 hover:text-green-600">Cart</a>
+                    </div>
+
+                    <!-- User Menu -->
+                    {% if user.is_authenticated %}
+                        <div class="relative">
+                            <button id="user-menu-button" class="flex items-center text-gray-600 hover:text-green-600">
+                                <span class="mr-1">{{ user.username }}</span>
+                                <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                            </button>
+                            <div id="user-menu-dropdown" class="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden">
+                                <a href="{% url 'my_account' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Account</a>
+                                <a href="{% url 'my_orders' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Orders</a>
+                                <a href="{% url 'logout' %}" onclick="return confirm('Are you sure you want to log out?');" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-green-600">
+                            <i data-lucide="user" class="h-6 w-6"></i>
+                        </a>
+                    {% endif %}
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-green-600">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Mobile Search -->
+            <div class="pb-4 md:hidden">
+                <form action="{% url 'product_list' %}" method="get">
+                    <div class="relative">
+                        <input
+                            type="search"
+                            name="search"
+                            placeholder="Search products..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        >
+                        <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                            <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="{% url 'product_list' %}" class="text-gray-600 hover:text-green-600 py-2">Shop</a>
+                    <a href="{% url 'categories' %}" class="text-gray-600 hover:text-green-600 py-2">Categories</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'my_account' %}" class="text-gray-600 hover:text-green-600 py-2">My Account</a>
+                        <a href="{% url 'my_orders' %}" class="text-gray-600 hover:text-green-600 py-2">My Orders</a>
+                        <a href="{% url 'logout' %}" onclick="return confirm('Are you sure you want to log out?');" class="text-gray-600 hover:text-green-600 py-2">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-green-600 py-2">Login</a>
+                        <a href="{% url 'register' %}" class="text-gray-600 hover:text-green-600 py-2">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mx-auto px-4 mt-4 space-y-2">
+        {% for message in messages %}
+            <div class="border rounded-md p-3 {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Mini Cart Drawer -->
+    <div id="mini-cart-overlay" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+    <aside id="mini-cart-drawer" class="fixed inset-y-0 right-0 z-50 w-96 max-w-full transform translate-x-full bg-white shadow-2xl overflow-y-auto transition-transform duration-300">
+        <div class="flex items-center justify-between p-6 border-b">
+            <div>
+                <h2 class="text-xl font-semibold">Mini Cart</h2>
+                <p class="text-sm text-gray-500">Quick view of your cart items</p>
+            </div>
+            <button id="mini-cart-close" type="button" class="text-gray-500 hover:text-green-600">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            {% if cart_items %}
+                <div class="space-y-4">
+                    {% for item in cart_items|slice:":5" %}
+                    <div class="flex items-center gap-4 rounded-2xl border border-gray-200 p-4">
+                        <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover">
+                            {% endif %}
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-medium text-gray-900 line-clamp-2">{{ item.product.name }}</h3>
+                            <p class="text-sm text-gray-500">Qty {{ item.quantity }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-green-600">₹{{ item.subtotal|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="border-t border-gray-200 mt-6 pt-4">
+                    <div class="flex items-center justify-between text-gray-700 mb-3">
+                        <span>Items</span>
+                        <span>{{ cart_total_items }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-lg font-semibold">
+                        <span>Total</span>
+                        <span>₹{{ cart_total|floatformat:2 }}</span>
+                    </div>
+                </div>
+                <a href="{% url 'cart' %}" class="mt-6 block w-full text-center bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold">View Full Cart</a>
+            {% else %}
+                <div class="text-center py-16">
+                    <i data-lucide="shopping-bag" class="mx-auto mb-4 h-12 w-12 text-green-600"></i>
+                    <h3 class="text-lg font-semibold mb-2">Your cart is empty</h3>
+                    <p class="text-sm text-gray-500 mb-6">Add fresh Konkan products to see them here.</p>
+                    <a href="{% url 'product_list' %}" class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl">Continue Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-green-800 text-white mt-auto">
+        <div class="container mx-auto px-4 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Kokani Bazaar</h3>
+                    <p class="text-gray-300 mb-4">
+                        Bringing the freshest organic produce directly from the Konkan to your home.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white"><i data-lucide="facebook" class="h-5 w-5"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i data-lucide="instagram" class="h-5 w-5"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i data-lucide="twitter" class="h-5 w-5"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'home' %}" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="{% url 'product_list' %}" class="text-gray-300 hover:text-white">Shop</a></li>
+                        <li><a href="{% url 'categories' %}" class="text-gray-300 hover:text-white">Categories</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Shipping Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Returns & Refunds</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-start">
+                            <i data-lucide="map-pin" class="h-5 w-5 mr-2 mt-0.5"></i>
+                            <span>Moregaon, Nallasopara, Maharashtra, India</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="phone" class="h-5 w-5 mr-2"></i>
+                            <span>8208463990</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-lucide="mail" class="h-5 w-5 mr-2"></i>
+                            <span>dhuri8973@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-green-700 mt-10 pt-6 text-center text-gray-300">
+                <p>&copy; 2026 Kokani Bazaar. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.lucide) lucide.createIcons();
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // User dropdown
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenuDropdown = document.getElementById('user-menu-dropdown');
+
+        if (userMenuButton && userMenuDropdown) {
+            userMenuButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userMenuDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', function() {
+                if (!userMenuDropdown.classList.contains('hidden')) {
+                    userMenuDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        // Mini cart drawer
+        const miniCartButton = document.getElementById('mini-cart-button');
+        const miniCartDrawer = document.getElementById('mini-cart-drawer');
+        const miniCartClose = document.getElementById('mini-cart-close');
+        const miniCartOverlay = document.getElementById('mini-cart-overlay');
+
+        function toggleMiniCart(open) {
+            if (!miniCartDrawer || !miniCartOverlay) return;
+            if (open) {
+                miniCartDrawer.classList.remove('translate-x-full');
+                miniCartOverlay.classList.remove('hidden');
+            } else {
+                miniCartDrawer.classList.add('translate-x-full');
+                miniCartOverlay.classList.add('hidden');
+            }
+        }
+
+        if (miniCartButton) {
+            miniCartButton.addEventListener('click', () => toggleMiniCart(true));
+        }
+
+        if (miniCartClose) {
+            miniCartClose.addEventListener('click', () => toggleMiniCart(false));
+        }
+
+        if (miniCartOverlay) {
+            miniCartOverlay.addEventListener('click', () => toggleMiniCart(false));
+        }
+
+        // Add simple loading state to forms
+        document.querySelectorAll('form.js-loading-form').forEach(form => {
+            form.addEventListener('submit', () => {
+                const submit = form.querySelector('button[type="submit"]');
+                if (!submit) return;
+                submit.disabled = true;
+                submit.classList.add('opacity-70', 'cursor-not-allowed');
+                const loader = document.createElement('span');
+                loader.className = 'inline-block h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin';
+                submit.prepend(loader);
+            });
+        });
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

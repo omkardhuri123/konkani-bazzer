@@ -1,0 +1,29 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Server Error - Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center py-12">
+    <div class="text-center px-4">
+        <!-- 500 Error Code -->
+        <div class="text-[120px] md:text-[180px] font-bold text-gray-200 leading-none mb-4 select-none">
+            500
+        </div>
+        
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+            Server Error
+        </h1>
+        
+        <p class="text-gray-600 text-lg mb-10 max-w-md mx-auto">
+            Something went wrong on our servers. 
+            We're working to fix the issue as soon as possible.
+        </p>
+        
+        <a href="{% url 'home' %}" 
+           class="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-medium text-lg transition">
+            ← Return to Homepage
+        </a>
+    </div>
+</div>
+{% endblock %}

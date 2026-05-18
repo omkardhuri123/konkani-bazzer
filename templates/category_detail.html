@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="flex flex-col min-h-screen">
+    <!-- Category Hero -->
+    <section class="relative">
+        <div class="h-64 md:h-80 overflow-hidden">
+            <div class="absolute inset-0 bg-black/50 z-10"></div>
+            {% if category.image %}
+                <img src="{{ category.image.url }}" 
+                     alt="{{ category.name }}" 
+                     class="w-full h-full object-cover">
+            {% else %}
+                <div class="w-full h-full bg-gray-300"></div>
+            {% endif %}
+        </div>
+        
+        <div class="absolute inset-0 flex items-center z-20">
+            <div class="container mx-auto px-4">
+                <div class="max-w-xl">
+                    <a href="{% url 'categories' %}" 
+                       class="inline-flex items-center mb-4 bg-white/90 hover:bg-white text-green-800 px-4 py-2 rounded-md font-medium">
+                        <i data-lucide="chevron-left" class="h-4 w-4 mr-1"></i>
+                        All Categories
+                    </a>
+                    <h1 class="text-4xl font-bold text-white mb-2">{{ category.name }}</h1>
+                    {% if category.description %}
+                        <p class="text-white/90 text-lg">{{ category.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Products Grid -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            {% if products|length == 0 %}
+                <div class="text-center py-16">
+                    <h3 class="text-xl font-semibold mb-2">No products found in this category</h3>
+                    <p class="text-gray-600 mb-6">Check back later or explore other categories.</p>
+                    <a href="{% url 'categories' %}" 
+                       class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-medium inline-block">
+                        View All Categories
+                    </a>
+                </div>
+            {% else %}
+                <h2 class="text-2xl font-bold mb-6">Products in {{ category.name }}</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {% for product in products %}
+                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl">
+                        <a href="{% url 'product_detail' product.slug %}" class="block relative">
+                            <div class="h-48 overflow-hidden">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" 
+                                         alt="{{ product.name }}" 
+                                         class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                                {% else %}
+                                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                        <i data-lucide="image" class="h-10 w-10 text-gray-400"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if product.original_price and product.original_price > product.price %}
+                            <div class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+                                Sale
+                            </div>
+                            {% endif %}
+                            
+                            {% if product.stock <= 5 and product.stock > 0 %}
+                            <div class="absolute top-3 right-3 bg-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+                                Only {{ product.stock }} left
+                            </div>
+                            {% elif product.stock == 0 %}
+                            <div class="absolute top-3 right-3 bg-gray-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+                                Sold Out
+                            </div>
+                            {% endif %}
+                        </a>
+                        
+                        <div class="p-4">
+                            <!-- Rating -->
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                {% for i in '12345' %}
+                                    {% if i|add:0 <= product.rating|floatformat:0 %}
+                                        <i data-lucide="star" class="fill-current h-4 w-4"></i>
+                                    {% else %}
+                                        <i data-lucide="star" class="h-4 w-4"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-xs text-gray-500 ml-1">({{ product.rating }})</span>
+                            </div>
+                            
+                            <a href="{% url 'product_detail' product.slug %}" class="block">
+                                <h3 class="font-medium text-gray-900 mb-2 line-clamp-2">{{ product.name }}</h3>
+                            </a>
+                            
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="font-semibold text-green-600 text-lg">₹{{ product.price|floatformat:2 }}</span>
+                                    {% if product.original_price and product.original_price > product.price %}
+                                        <span class="text-sm text-gray-500 line-through ml-2">
+                                            ₹{{ product.original_price|floatformat:2 }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <a href="{% url 'add_to_cart' product.pk %}" 
+                                   class="bg-green-100 hover:bg-green-200 text-green-700 p-3 rounded-full transition-colors">
+                                    <i data-lucide="shopping-cart" class="h-5 w-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

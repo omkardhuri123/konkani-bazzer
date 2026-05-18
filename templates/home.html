@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kokani Bazaar - Fresh Konkan Products{% endblock %}
+
+{% block content %}
+<div class="py-12">
+    <div class="container mx-auto px-4">
+        
+        <!-- Hero Section -->
+        <div class="mb-16">
+            <div class="relative rounded-2xl overflow-hidden">
+                <img src="{% static 'images/main.jpg' %}"
+                     alt="Kokani Bazaar hero"
+                     class="w-full h-72 md:h-[32rem] object-cover object-center">
+                <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <div class="text-center text-white px-4">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-4">
+                            Welcome to Kokani Bazaar
+                        </h1>
+                        <p class="text-lg md:text-2xl max-w-2xl mx-auto">
+                            Fresh • Pure • Traditional Konkan Products
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Products -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-semibold">Featured Products</h2>
+                <a href="{% url 'product_list' %}" 
+                   class="text-green-600 hover:text-green-700 font-medium flex items-center">
+                    View All Products →
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for product in featured_products %}
+                <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
+                    <a href="{% url 'product_detail' product.slug %}" class="block">
+                        <div class="h-52 overflow-hidden">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" 
+                                     alt="{{ product.name }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            {% else %}
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <i data-lucide="image" class="h-12 w-12 text-gray-400"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                    
+                    <div class="p-5">
+                        <h3 class="font-semibold text-lg mb-2 line-clamp-2">{{ product.name }}</h3>
+                        
+                        {% if product.category %}
+                        <p class="text-sm text-gray-500 mb-3">{{ product.category.name }}</p>
+                        {% endif %}
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-2xl font-bold text-green-600">₹{{ product.price|floatformat:2 }}</span>
+                                {% if product.original_price and product.original_price > product.price %}
+                                <span class="text-sm text-gray-400 line-through ml-2">
+                                    ₹{{ product.original_price|floatformat:2 }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <a href="{% url 'add_to_cart' product.pk %}" 
+                               class="bg-green-100 hover:bg-green-200 text-green-700 p-3 rounded-xl transition">
+                                <i data-lucide="shopping-cart" class="h-5 w-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

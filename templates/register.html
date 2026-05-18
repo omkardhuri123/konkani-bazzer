@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-16">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden md:flex">
+        <div class="hidden md:block md:w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80');"></div>
+        <div class="w-full md:w-1/2 p-10">
+            <div class="mb-8">
+                <p class="text-sm uppercase text-green-600 font-semibold">Create an account</p>
+                <h1 class="text-3xl font-bold text-gray-900 mt-3">Join Kokani Bazaar</h1>
+                <p class="text-gray-500 mt-2">Sign up to save favorites, place orders, and manage your profile.</p>
+            </div>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% for field in form.visible_fields %}
+                    <div>
+                        <label for="{{ field.auto_id }}" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <p class="text-sm text-red-600 mt-2">{{ field.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="w-full py-3 px-4 bg-green-600 text-white rounded-2xl text-lg font-semibold hover:bg-green-700 transition">Create account</button>
+
+                <p class="text-center text-sm text-gray-500">Already have an account? <a href="{% url 'login' %}" class="text-green-600 hover:text-green-700">Login here</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

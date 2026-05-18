@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Wishlist - Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="py-12">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold mb-8">Your Wishlist</h1>
+        
+        {% if products %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for product in products %}
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all">
+                <a href="{% url 'product_detail' product.slug %}" class="block relative">
+                    <div class="h-52 overflow-hidden">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" 
+                                 alt="{{ product.name }}" 
+                                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        {% else %}
+                            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <i data-lucide="image" class="h-12 w-12 text-gray-400"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if product.stock <= 5 and product.stock > 0 %}
+                    <div class="absolute top-3 right-3 bg-orange-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+                        Only {{ product.stock }} left
+                    </div>
+                    {% elif product.stock == 0 %}
+                    <div class="absolute top-3 right-3 bg-gray-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+                        Sold Out
+                    </div>
+                    {% endif %}
+                </a>
+                
+                <div class="p-5">
+                    <!-- Rating -->
+                    <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                            {% for i in '12345' %}
+                                <i data-lucide="star" 
+                                   class="{% if i|add:0 <= product.rating|floatformat:0 %}fill-current{% endif %} h-4 w-4"></i>
+                            {% endfor %}
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">({{ product.rating }})</span>
+                    </div>
+                    
+                    <a href="{% url 'product_detail' product.slug %}" class="block">
+                        <h3 class="font-semibold text-lg mb-3 line-clamp-2">{{ product.name }}</h3>
+                    </a>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <span class="text-2xl font-bold text-green-600">₹{{ product.price|floatformat:2 }}</span>
+                            {% if product.original_price and product.original_price > product.price %}
+                            <span class="text-sm text-gray-400 line-through ml-2">₹{{ product.original_price|floatformat:2 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Add to Cart -->
+                    <form action="{% url 'add_to_cart' product.pk %}" method="POST" class="mb-3 js-loading-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2">
+                            <i data-lucide="shopping-cart" class="h-5 w-5"></i>
+                            Add to Cart
+                        </button>
+                    </form>
+
+                    <!-- Remove from Wishlist -->
+                    <form action="{% url 'remove_from_wishlist' product.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                class="w-full text-red-500 hover:text-red-600 hover:bg-red-50 py-3 rounded-xl font-medium flex items-center justify-center gap-2 border border-red-200">
+                            <i data-lucide="trash-2" class="h-5 w-5"></i>
+                            Remove
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty Wishlist -->
+        <div class="bg-white rounded-2xl shadow-md p-12 text-center max-w-md mx-auto">
+            <div class="flex justify-center mb-6">
+                <i data-lucide="heart" class="h-20 w-20 text-gray-300"></i>
+            </div>
+            <h2 class="text-3xl font-semibold mb-3">Your wishlist is empty</h2>
+            <p class="text-gray-600 mb-8">Save your favorite products here for later.</p>
+            <a href="{% url 'product_list' %}" 
+               class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-medium inline-block">
+                Browse Products
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

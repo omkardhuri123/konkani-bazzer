@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Checkout - Kokani Bazaar{% endblock %}
+
+{% block content %}
+<div class="py-12">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Checkout Form -->
+            <div class="lg:col-span-8">
+                <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                    <form method="POST" class="js-loading-form" target="_blank">
+                        {% csrf_token %}
+
+                        <!-- Shipping Information -->
+                        <h2 class="text-xl font-semibold mb-6">Shipping Information</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                {{ form.first_name.label_tag }}
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <p class="text-red-500 text-sm mt-1">{{ form.first_name.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {{ form.last_name.label_tag }}
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <p class="text-red-500 text-sm mt-1">{{ form.last_name.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.phone.label_tag }}
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.address.label_tag }}
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.address.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                {{ form.city.label_tag }}
+                                {{ form.city }}
+                            </div>
+                            <div>
+                                {{ form.state.label_tag }}
+                                {{ form.state }}
+                            </div>
+                            <div>
+                                {{ form.zip_code.label_tag }}
+                                {{ form.zip_code }}
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            {{ form.country.label_tag }}
+                            {{ form.country }}
+                        </div>
+
+                        <!-- Payment Method -->
+                        <h2 class="text-xl font-semibold mb-4">Payment Method</h2>
+                        <div class="space-y-4 mb-8">
+                            {% for field in form.payment_method %}
+                            <div class="flex items-center">
+                                {{ field }}
+                                {{ field.label }}
+                            </div>
+                            {% endfor %}
+                            
+                            <!-- UPI QR Code -->
+                            <div id="upi-scanner" class="hidden mt-4 p-4 border rounded-lg">
+                                <p class="text-center text-sm font-medium mb-3">Scan with any UPI App</p>
+                                <img src="{% static 'images/upi_qr.png' %}" 
+                                     alt="UPI QR Code" 
+                                     class="w-48 h-48 mx-auto border rounded-lg">
+                            </div>
+                        </div>
+
+                        <!-- Order Notes -->
+                        <div class="mb-6">
+                            {{ form.notes.label_tag }}
+                            {{ form.notes }}
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-4 rounded-xl text-lg transition">
+                            Place Order • ₹{{ total|floatformat:2 }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:col-span-4">
+                <div class="bg-white rounded-xl shadow-md p-6 sticky top-24">
+                    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                    
+                    <div class="border-b pb-4 mb-4 space-y-3">
+                        {% for item in cart_items %}
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">{{ item.product.name }} × {{ item.quantity }}</span>
+                            <span class="font-medium">₹{{ item.subtotal|floatformat:2 }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal</span>
+                            <span>₹{{ total|floatformat:2 }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Shipping</span>
+                            <span class="text-green-600">Free</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Tax (Included)</span>
+                            <span>₹0.00</span>
+                        </div>
+                        
+                        <div class="border-t pt-4 mt-4">
+                            <div class="flex justify-between font-semibold text-lg">
+                                <span>Total</span>
+                                <span>₹{{ total|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show UPI QR when UPI is selected
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const upiContainer = document.getElementById('upi-scanner');
+            if (this.value === 'upi') {
+                upiContainer.classList.remove('hidden');
+            } else {
+                upiContainer.classList.add('hidden');
+            }
+        });
+    });
+</script>
+{% endblock %}
