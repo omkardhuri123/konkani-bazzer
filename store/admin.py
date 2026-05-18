@@ -9,10 +9,18 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+# ✅ AFTER — add a proper admin display method
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    readonly_fields = ['product', 'quantity', 'price', 'get_total']
+    readonly_fields = ['product', 'quantity', 'price', 'item_total']
     extra = 0
+
+    @admin.display(description='Total')
+    def item_total(self, obj):
+        # Guard against None price (data integrity safety net)
+        if obj.price is None or obj.quantity is None:
+            return '—'
+        return f"₹{obj.price * obj.quantity:.2f}"
 
 
 @admin.register(Product)
@@ -34,10 +42,11 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     list_display = ['id', 'user', 'total', 'status', 'payment_method', 'created_at']
-    list_filter = ['status', 'payment_method']
+    # ✅ Added 'created_at' to list_filter so you can still filter by date
+    list_filter = ['status', 'payment_method', 'created_at']
     search_fields = ['user__username', 'id', 'email', 'phone']
     readonly_fields = ['created_at', 'updated_at']
-    date_hierarchy = 'created_at'
+    # ✅ REMOVED date_hierarchy — it requires MySQL timezone tables on Windows
 
 
 # Site branding
