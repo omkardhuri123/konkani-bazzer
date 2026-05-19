@@ -2,14 +2,13 @@ import environ
 from pathlib import Path
 import os
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("SECRET_KEY")
-DEBUG = env.bool("DEBUG", default=False) # type: ignore
+DEBUG = env.bool("DEBUG", default=False)  # type: ignore
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])  # type: ignore[arg-type]
 
@@ -65,7 +64,7 @@ TEMPLATES = [
 # Local development (Windows + MySQL): DB_ENGINE=django.db.backends.mysql
 # PythonAnywhere free tier (SQLite):   DB_ENGINE=django.db.backends.sqlite3
 
-DB_ENGINE = env("DB_ENGINE", default="django.db.backends.sqlite3") # type: ignore
+DB_ENGINE = env("DB_ENGINE", default="django.db.backends.sqlite3")  # type: ignore
 
 if DB_ENGINE == "django.db.backends.sqlite3":
     # SQLite is a simple file-based database. No server, no credentials needed.
@@ -85,8 +84,8 @@ else:
             "NAME": env("DB_NAME"),
             "USER": env("DB_USER"),
             "PASSWORD": env("DB_PASSWORD"),
-            "HOST": env("DB_HOST", default="localhost"), # type: ignore
-            "PORT": env("DB_PORT", default="3306"), # type: ignore
+            "HOST": env("DB_HOST", default="localhost"),  # type: ignore
+            "PORT": env("DB_PORT", default="3306"),  # type: ignore
             "TIME_ZONE": "Asia/Kolkata",
             "OPTIONS": {
                 "charset": "utf8mb4",
